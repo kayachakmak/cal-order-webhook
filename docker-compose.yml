@@ -1,0 +1,33 @@
+services:
+  webhook-server:
+    build: .
+    container_name: elevenlabs-webhook
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - token_data:/data
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      # HTTP router (will auto-redirect to HTTPS via your Traefik global config)
+      - "traefik.http.routers.elevenlabs-webhook.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.elevenlabs-webhook.entrypoints=web"
+      # HTTPS router
+      - "traefik.http.routers.elevenlabs-webhook-secure.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.elevenlabs-webhook-secure.entrypoints=websecure"
+      - "traefik.http.routers.elevenlabs-webhook-secure.tls=true"
+      - "traefik.http.routers.elevenlabs-webhook-secure.tls.certresolver=letsencrypt"
+      # Tell Traefik which port the container listens on
+      - "traefik.http.services.elevenlabs-webhook.loadbalancer.server.port=8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  token_data:
+    driver: local
