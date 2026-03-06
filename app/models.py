@@ -13,11 +13,9 @@ PRODUCTS = {
 SHEET_HEADERS = [
     "Tarih",
     "Eczane Adı",
-    "Telefon",
     "D-Vitamini Test (adet)",
     "Ovulasyon Test (adet)",
     "Dijital Gebelik Testi (adet)",
-    "Toplam Adet",
     "Notlar",
 ]
 
@@ -27,7 +25,6 @@ class OrderPayload(BaseModel):
     """Payload sent by ElevenLabs agent when logging a pharmacy order."""
 
     pharmacy_name: str = Field(..., description="Name of the pharmacy")
-    pharmacy_phone: Optional[str] = Field(None, description="Phone number")
     d_vitamini: int = Field(0, ge=0, description="Qty: D-Vitamini Hızlı Test Kaseti")
     ovulasyon: int = Field(0, ge=0, description="Qty: Ovulasyon Hızlı Test Kaseti")
     dijital_gebelik: int = Field(0, ge=0, description="Qty: Dijital Gebelik Testi")
@@ -38,7 +35,6 @@ class FollowupPayload(BaseModel):
     """Payload sent by ElevenLabs agent when scheduling a follow-up."""
 
     pharmacy_name: str = Field(..., description="Name of the pharmacy")
-    pharmacy_phone: Optional[str] = Field(None, description="Phone number")
     followup_datetime: str = Field(
         ..., description="ISO 8601 datetime for the follow-up call"
     )

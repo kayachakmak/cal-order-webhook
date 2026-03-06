@@ -29,8 +29,6 @@ class GoogleCalendarService:
         end_dt = start_dt + timedelta(minutes=self.FOLLOWUP_DURATION_MINUTES)
 
         description_parts = [f"Eczane: {payload.pharmacy_name}"]
-        if payload.pharmacy_phone:
-            description_parts.append(f"Telefon: {payload.pharmacy_phone}")
         if payload.notes:
             description_parts.append(f"Not: {payload.notes}")
 

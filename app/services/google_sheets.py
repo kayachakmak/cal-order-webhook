@@ -25,7 +25,7 @@ class GoogleSheetsService:
         result = (
             service.spreadsheets()
             .values()
-            .get(spreadsheetId=self.settings.google_sheet_id, range="A1:H1")
+            .get(spreadsheetId=self.settings.google_sheet_id, range="A1:F1")
             .execute()
         )
         values = result.get("values", [])
@@ -33,7 +33,7 @@ class GoogleSheetsService:
         if not values:
             service.spreadsheets().values().update(
                 spreadsheetId=self.settings.google_sheet_id,
-                range="A1:H1",
+                range="A1:F1",
                 valueInputOption="RAW",
                 body={"values": [SHEET_HEADERS]},
             ).execute()
@@ -44,16 +44,13 @@ class GoogleSheetsService:
 
         service = self._get_service()
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        total = order.d_vitamini + order.ovulasyon + order.dijital_gebelik
 
         row = [
             now,
             order.pharmacy_name,
-            order.pharmacy_phone or "",
             order.d_vitamini,
             order.ovulasyon,
             order.dijital_gebelik,
-            total,
             order.notes or "",
         ]
 
@@ -62,7 +59,7 @@ class GoogleSheetsService:
             .values()
             .append(
                 spreadsheetId=self.settings.google_sheet_id,
-                range="A:H",
+                range="A:F",
                 valueInputOption="USER_ENTERED",
                 insertDataOption="INSERT_ROWS",
                 body={"values": [row]},
